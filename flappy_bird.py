@@ -41,6 +41,7 @@ pipe_gap = 150
 pipe_velocity = 4
 pipes = []
 score = 0
+
 high_score = 0
 lives = 3
 distance = 0
@@ -48,6 +49,19 @@ running = True
 game_over = False
 current_screen = "start"  # Start with the starting screen
 
+# Function to read the high score from the file
+def read_high_score():
+    if os.path.exists("high_score.txt"):
+        with open("high_score.txt", "r") as file:
+            content = file.read().strip()  # Strip any extra whitespace or newline characters
+            return int(content) if content else 0  # Return 0 if the file is empty
+    else:
+        return 0   # Default to 0 if no file exists
+
+# Function to save the high score to the file
+def save_high_score(score):
+    with open("high_score.txt", "w") as file:
+        file.write(str(score))
 
 # Function to reset the game
 def reset_game():
@@ -60,12 +74,10 @@ def reset_game():
     lives = 3
     game_over = False
 
-
 # Function to spawn a new pipe
 def spawn_pipe():
     pipe_height = random.randint(100, HEIGHT - pipe_gap - 100)
     pipes.append({"x": WIDTH, "top": pipe_height, "bottom": pipe_height + pipe_gap})
-
 
 # Function to draw a button
 def draw_button(screen, text, x, y, width, height, inactive_color, active_color, action=None):
@@ -85,7 +97,6 @@ def draw_button(screen, text, x, y, width, height, inactive_color, active_color,
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
     screen.blit(text_surface, text_rect)
-
 
 # Function to display the starting screen
 def start_screen():
@@ -107,7 +118,6 @@ def start_screen():
     draw_button(screen, "Quit", WIDTH // 2 - 100, HEIGHT // 2 + 160, 200, 50, GRAY, RED, quit_game)
     pygame.display.flip()
 
-
 # Function to display the settings screen
 def settings_screen():
     screen.blit(background_image, (0, 0))
@@ -118,7 +128,6 @@ def settings_screen():
     # Add a back button
     draw_button(screen, "Back", 10, 10, 100, 50, GRAY, RED, lambda: set_screen("start"))
     pygame.display.flip()
-
 
 # Function to display the about us screen
 def about_screen():
@@ -136,20 +145,18 @@ def about_screen():
     draw_button(screen, "Back", 10, 10, 100, 50, GRAY, RED, lambda: set_screen("start"))
     pygame.display.flip()
 
-
 # Function to set the current screen
 def set_screen(screen_name):
     global current_screen
     current_screen = screen_name
-
 
 # Function to quit the game
 def quit_game():
     global running
     running = False
 
-
 # Main game loop
+high_score = read_high_score()  # Read high score at the start
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -173,6 +180,7 @@ while running:
         if game_over:
             if score > high_score:
                 high_score = score
+                save_high_score(high_score)  # Save new high score to the file
 
             screen.blit(background_image, (0, 0))
             font = pygame.font.Font(None, 50)
@@ -186,7 +194,31 @@ while running:
         # Update bird
         bird_velocity += gravity
         bird_y += bird_velocity
-        if bird_y > HEIGHT or bird_y < 0:
+
+        # Create a rectangle around the bird for collision detection
+        bird_rect = pygame.Rect(bird_x - 25, int(bird_y) - 25, 50, 50)
+
+        # Update pipes and check for collisions
+        for pipe in pipes:
+            pipe["x"] -= pipe_velocity
+            top_pipe_rect = pygame.Rect(pipe["x"], 0, pipe_width, pipe["top"])
+            bottom_pipe_rect = pygame.Rect(pipe["x"], pipe["bottom"], pipe_width, HEIGHT - pipe["bottom"])
+
+            if bird_rect.colliderect(top_pipe_rect) or bird_rect.colliderect(bottom_pipe_rect):
+                lives -= 1
+                if lives <= 0:
+                    game_over = True
+                else:
+                    bird_y = HEIGHT // 2
+                    bird_velocity = 0
+                break
+
+            if pipe["x"] + pipe_width < 0:
+                pipes.remove(pipe)
+                score += 1
+
+        # Check if bird hits the ground
+        if bird_y + 25 > HEIGHT or bird_y - 25 < 0:
             lives -= 1
             if lives <= 0:
                 game_over = True
@@ -194,27 +226,16 @@ while running:
                 bird_y = HEIGHT // 2
                 bird_velocity = 0
 
-        # Update pipes
-        for pipe in pipes:
-            pipe["x"] -= pipe_velocity
-            if pipe["x"] + pipe_width < 0:
-                pipes.remove(pipe)
-                score += 1
-
         # Spawn new pipes
         if len(pipes) == 0 or pipes[-1]["x"] < WIDTH // 2:
             spawn_pipe()
 
-        # Update distance
         distance += pipe_velocity // 4
 
-        # Draw background
         screen.blit(background_image, (0, 0))
 
-        # Draw bird
-        screen.blit(bird_image, (bird_x - 25, int(bird_y) - 25))  # Adjust offsets if needed
+        screen.blit(bird_image, (bird_x - 25, int(bird_y) - 25))
 
-        # Draw pipes
         for pipe in pipes:
             pygame.draw.rect(screen, GREEN, (pipe["x"], 0, pipe_width, pipe["top"]))  # Top pipe
             pygame.draw.rect(screen, GREEN, (pipe["x"], pipe["bottom"], pipe_width, HEIGHT - pipe["bottom"]))  # Bottom pipe
@@ -231,5 +252,5 @@ while running:
         pygame.display.flip()
         clock.tick(30)
 
-# Quit Pygame
+# Quit the game
 pygame.quit()
