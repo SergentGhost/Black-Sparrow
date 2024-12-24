@@ -14,6 +14,10 @@ pygame.display.set_caption("Flappy Bird")
 background_image = pygame.image.load("Img/bg.png")
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
+# Load bird image
+bird_image = pygame.image.load("Img/birds11.png")
+bird_image = pygame.transform.scale(bird_image, (50, 50))  # Resize as needed
+
 # Colors
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
@@ -208,7 +212,7 @@ while running:
         screen.blit(background_image, (0, 0))
 
         # Draw bird
-        pygame.draw.circle(screen, WHITE, (bird_x, int(bird_y)), bird_radius)
+        screen.blit(bird_image, (bird_x - 25, int(bird_y) - 25))  # Adjust offsets if needed
 
         # Draw pipes
         for pipe in pipes:
