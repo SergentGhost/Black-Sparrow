@@ -1,21 +1,22 @@
 import pygame
 import random
 import os
+import webbrowser  # Import the webbrowser module
 
-# Initialize Pygame
 pygame.init()
 
-# Screen dimensions
-WIDTH, HEIGHT = 1050, 600
+WIDTH, HEIGHT = 1050, 600   # This will decide how big the screen is.
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Flappy Bird")
+pygame.display.set_caption("Black Sparow")  # Display the Name on the home Screen.
 
-# Load background image
-background_image = pygame.image.load("Img/bg.png")
+# Default settings
+selected_difficulty = "Medium"
+selected_theme = "Day"
+selected_bird_skin = "Default"
+
+background_image = pygame.image.load("Img/bg.png")  # BG Img ( Change as per you need!!)
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-
-# Load bird image
-bird_image = pygame.image.load("Img/birds11.png")
+bird_image = pygame.image.load("Img/birds11.png")   # Birds Img .
 bird_image = pygame.transform.scale(bird_image, (50, 50))  # Resize as needed
 
 # Colors
@@ -47,21 +48,18 @@ lives = 3
 distance = 0
 running = True
 game_over = False
-current_screen = "start"  # Start with the starting screen
+current_screen = "start"  # Defaulte Screen to start with.
 
-# Function to read the high score from the file
-def read_high_score():
-    if os.path.exists("high_score.txt"):
-        with open("high_score.txt", "r") as file:
-            content = file.read().strip()  # Strip any extra whitespace or newline characters
-            return int(content) if content else 0  # Return 0 if the file is empty
-    else:
-        return 0   # Default to 0 if no file exists
-
-# Function to save the high score to the file
 def save_high_score(score):
     with open("high_score.txt", "w") as file:
         file.write(str(score))
+def read_high_score():
+    if os.path.exists("high_score.txt"):  # Store the best highe score in the .txt file 
+        with open("high_score.txt", "r") as file:
+            content = file.read().strip()  
+            return int(content) if content else 0  
+    else:
+        return 0   # Default to 0 if no file exists
 
 # Function to reset the game
 def reset_game():
@@ -71,7 +69,7 @@ def reset_game():
     pipes = []
     score = 0
     distance = 0
-    lives = 3
+    lives = 3 
     game_over = False
 
 # Function to spawn a new pipe
@@ -112,13 +110,13 @@ def start_screen():
     screen.blit(high_score_text, (WIDTH // 2 - 150, HEIGHT // 2 - 180))
 
     # Draw buttons
-    draw_button(screen, "Start", WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50, GRAY, GREEN, lambda: set_screen("game"))
+    draw_button(screen, "Start", WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50, GRAY, GREEN, lambda: set_screen("Game"))  
     draw_button(screen, "Settings", WIDTH // 2 - 100, HEIGHT // 2 + 20, 200, 50, GRAY, GREEN, lambda: set_screen("settings"))
     draw_button(screen, "About Us", WIDTH // 2 - 100, HEIGHT // 2 + 90, 200, 50, GRAY, GREEN, lambda: set_screen("about"))
     draw_button(screen, "Quit", WIDTH // 2 - 100, HEIGHT // 2 + 160, 200, 50, GRAY, RED, quit_game)
     pygame.display.flip()
 
-# Function to display the settings screen
+
 def settings_screen():
     screen.blit(background_image, (0, 0))
     font = pygame.font.Font(None, 50)
@@ -129,21 +127,225 @@ def settings_screen():
     draw_button(screen, "Back", 10, 10, 100, 50, GRAY, RED, lambda: set_screen("start"))
     pygame.display.flip()
 
+# def settings_screen():
+#     running = True
+#     global selected_difficulty, selected_theme, selected_bird_skin
+
+#     while running:
+#         screen.fill(BLACK)  # Settings background color
+
+#         # Title
+#         font_title = pygame.font.Font(None, 60)
+#         title_text = font_title.render("Settings", True, WHITE)
+#         title_rect = title_text.get_rect(center=(WIDTH // 2, 50))
+#         screen.blit(title_text, title_rect)
+
+#         # Difficulty Setting
+#         font_option = pygame.font.Font(None, 40)
+#         difficulty_text = font_option.render(f"Difficulty: {selected_difficulty}", True, WHITE)
+#         difficulty_rect = difficulty_text.get_rect(center=(WIDTH // 2, 150))
+#         screen.blit(difficulty_text, difficulty_rect)
+
+#         draw_button(screen, "Easy", WIDTH // 2 - 150, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Easy"))
+#         draw_button(screen, "Medium", WIDTH // 2 - 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Medium"))
+#         draw_button(screen, "Hard", WIDTH // 2 + 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Hard"))
+
+#         # Theme Setting
+#         theme_text = font_option.render(f"Theme: {selected_theme}", True, WHITE)
+#         theme_rect = theme_text.get_rect(center=(WIDTH // 2, 300))
+#         screen.blit(theme_text, theme_rect)
+
+#         draw_button(screen, "Day", WIDTH // 2 - 150, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Day"))
+#         draw_button(screen, "Night", WIDTH // 2 - 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Night"))
+#         draw_button(screen, "Winter", WIDTH // 2 + 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Winter"))
+
+#         # Bird Skin Setting
+#         bird_skin_text = font_option.render(f"Bird Skin: {selected_bird_skin}", True, WHITE)
+#         bird_skin_rect = bird_skin_text.get_rect(center=(WIDTH // 2, 450))
+#         screen.blit(bird_skin_text, bird_skin_rect)
+
+#         draw_button(screen, "Default", WIDTH // 2 - 150, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Default"))
+#         draw_button(screen, "Red", WIDTH // 2 - 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Red"))
+#         draw_button(screen, "Blue", WIDTH // 2 + 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Blue"))
+
+#         # Back Button (Repositioned slightly higher)
+#         draw_button(screen, "Back", WIDTH // 2 - 50, HEIGHT - 150, 100, 50, GRAY, RED, lambda:())
+
+#         pygame.display.flip()
+
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 exit()
+
+# # Debug Back Button Function
+# # def debug_back_button():                              
+# #    print("Back button clicked!")  # Debugging output
+# #    set_screen("start")  # Ensure this function switches back to the start screen
+
+# # Updated draw_button Function
+# def draw_button(screen, text, x, y, width, height, color, hover_color, action):
+#     mouse = pygame.mouse.get_pos()
+#     click = pygame.mouse.get_pressed()
+
+#     # Check if mouse is over the button
+#     if x + width > mouse[0] > x and y + height > mouse[1] > y:
+#         pygame.dra
+
+# # Helper functions for changing settings
+# def change_difficulty(level):
+#     global selected_difficulty
+#     selected_difficulty = level
+
+# def change_theme(theme):
+#     global selected_theme
+#     selected_theme = theme
+#     apply_theme(theme)
+
+# def change_bird_skin(skin):
+#     global selected_bird_skin
+#     selected_bird_skin = skin
+#     apply_bird_skin(skin)
+
+# def apply_theme(theme):
+#     global background_image
+#     if theme == "Day":
+#         background_image = pygame.image.load("Img/bg.png")
+#     elif theme == "Night":
+#         background_image = pygame.image.load("Img/bg.png")
+#     elif theme == "Winter":
+#         background_image = pygame.image.load("Img/bg.png")
+
+# def apply_bird_skin(skin):
+#     global bird_image
+#     if skin == "Default":
+#         bird_image = pygame.image.load("Img/bird_blue (2).png")
+#     elif skin == "Red":
+#         bird_image = pygame.image.load("Img/birds11.png")
+#     elif skin == "Blue":
+#         bird_image = pygame.image.load("Img/bird_blue (1).png")
+
+
 # Function to display the about us screen
 def about_screen():
     screen.blit(background_image, (0, 0))
-    font = pygame.font.Font(None, 40)
-    title_text = font.render("About the Developer", True, WHITE)
-    dev_text = font.render("Tushar Albert Burney", True, WHITE)
-    desc_text = font.render("Passionate developer & game designer.", True, WHITE)
 
-    screen.blit(title_text, (WIDTH // 2 - 200, HEIGHT // 2 - 150))
-    screen.blit(dev_text, (WIDTH // 2 - 200, HEIGHT // 2 - 80))
-    screen.blit(desc_text, (WIDTH // 2 - 200, HEIGHT // 2 - 30))
+    # Box dimensions and position
+    box_width, box_height = 750, 400
+    box_x, box_y = (WIDTH - box_width) // 2, (HEIGHT - box_height) // 2
 
-    # Add a back button
-    draw_button(screen, "Back", 10, 10, 100, 50, GRAY, RED, lambda: set_screen("start"))
+    # Draw the box
+    pygame.draw.rect(screen, GRAY, (box_x, box_y, box_width, box_height), border_radius=15)
+    pygame.draw.rect(screen, WHITE, (box_x, box_y, box_width, box_height), 5, border_radius=15)  # Border
+
+    # Draw the title
+    font_title = pygame.font.Font(None, 50)
+    title_text = font_title.render("Dev Note", True, BLACK)
+    title_rect = title_text.get_rect(center=(box_x + box_width // 2, box_y + 40))
+    screen.blit(title_text, title_rect)
+
+    # Draw the developer's image (placeholder)
+    image_size = 100
+    dev_image = pygame.image.load("Img/OIP.jpeg")  # Replace with your developer image path
+    dev_image = pygame.transform.scale(dev_image, (image_size, image_size))
+    image_rect = dev_image.get_rect(center=(box_x + 100, box_y + 150))
+    screen.blit(dev_image, image_rect)
+
+    # Write a paragraph about the developer with dynamic wrapping
+    font_text = pygame.font.Font(None, 30)
+    paragraph = (
+        "Hey there, "
+        "I’m Tushar Albert Burney, the developer behind this project. "
+        "This is my twist on the classic, with smooth mechanics and the familiar challenge we all love. "
+        "I’m actively working on updates to enhance the experience—stay tuned for what’s next! "
+        "If you like this project, follow me on GitHub for more updates: /SergentGhost. "
+        "Thanks for playing, and keep flapping! 🐦"
+    )
+
+    text_x = box_x + 180  # Start text to the right of the image
+    text_y = box_y + 100  # Start the paragraph below the title
+    text_width = box_width - 200  # Allow margin for text
+    render_text_wrapped(screen, paragraph, font_text, BLACK, text_x, text_y, text_width)
+
+    # Add a Linktree button
+    link_button_x = box_x + box_width // 2 - 100
+    link_button_y = box_y + box_height - 60
+    draw_button(
+        screen,
+        "More About Me",
+        link_button_x,
+        link_button_y,
+        200,
+        40,
+        GRAY,
+        GREEN,
+        lambda: open_link("https://linktr.ee/TusharAlbertBurney")  # Replace with your Linktree URL
+    )
+
+    # Add a Back button
+    back_button_x = 10
+    back_button_y = 10
+    draw_button(
+        screen,
+        "Back",
+        back_button_x,
+        back_button_y,
+        100,
+        50,
+        GRAY,
+        RED,
+        lambda: set_screen("start")
+    )
     pygame.display.flip()
+
+
+# Helper function to open a link in the default web browser
+def open_link(url):
+    import webbrowser
+    webbrowser.open(url)
+
+
+# Helper function to render wrapped text
+def render_text_wrapped(surface, text, font, color, x, y, max_width):
+    """Render text within a specific width, wrapping lines if necessary."""
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+    for word in words:
+        test_line = f"{current_line} {word}".strip()
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)  # Add the last line
+
+    line_spacing = 10
+    for i, line in enumerate(lines):
+        line_surface = font.render(line, True, color)
+        surface.blit(line_surface, (x, y + i * (font.size(line)[1] + line_spacing)))
+
+
+# Helper function to draw buttons
+def draw_button(screen, text, x, y, width, height, color, hover_color, action):
+    """Draw a button and handle click events."""
+    mouse_pos = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    button_rect = pygame.Rect(x, y, width, height)
+
+    # Change color on hover
+    if button_rect.collidepoint(mouse_pos):
+        pygame.draw.rect(screen, hover_color, button_rect)
+        if click[0]:  # Check if mouse is clicked
+            action()
+    else:
+        pygame.draw.rect(screen, color, button_rect)
+
+    # Draw button text
+    font = pygame.font.Font(None, 30)
+    text_surface = font.render(text, True, BLACK)
+    text_rect = text_surface.get_rect(center=button_rect.center)
+    screen.blit(text_surface, text_rect)
 
 # Function to set the current screen
 def set_screen(screen_name):

@@ -6,7 +6,7 @@
 
 ## Description
 
-Hi, I'm Tushar Albert Burney, a passionate web developer and tech enthusiast. This is one of my first projects that I will be working on throughout the year as part of Geekyz Inc. I'm constantly exploring new technologies and learning as I go, and this Discord bot is just the beginning of many more exciting projects to come. Stay tuned for updates as I continue to improve and expand my skills!
+Hi, I'm Tushar Albert Burney, a passionate web developer and tech enthusiast. This is one of my first projects that I will be working on throughout the year as part of Geekyz Inc. I'm constantly exploring new technologies and learning as I go,  Stay tuned for updates as I continue to improve and expand my skills! Don`t forget to check out the Dev Logs!!
 
 ## Installation
 
@@ -25,6 +25,11 @@ Explain how to use the project. Provide examples if possible.
 ```bash
 python flappy_bird.py
 ```
+## Dev Logs....
+> Working high score system.
+> +1 For making me mad at just 500 lines. 
+> Working about me.
+? Trying to sort a setting issue i have commemnet out the setting thing idk what do to 🥹🥹!!!
 
 ## Contributing
 
