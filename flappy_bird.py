@@ -1,21 +1,18 @@
 import pygame
 import random
 import os
-import webbrowser  # Import the webbrowser module
+import webbrowser 
 
 pygame.init()
+
 
 WIDTH, HEIGHT = 1050, 600   # This will decide how big the screen is.
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Black Sparow")  # Display the Name on the home Screen.
 
-# Default settings
-selected_difficulty = "Medium"
-selected_theme = "Day"
-selected_bird_skin = "Default"
-
 background_image = pygame.image.load("Img/bg.png")  # BG Img ( Change as per you need!!)
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
 bird_image = pygame.image.load("Img/birds11.png")   # Birds Img .
 bird_image = pygame.transform.scale(bird_image, (50, 50))  # Resize as needed
 
@@ -53,6 +50,7 @@ current_screen = "start"  # Defaulte Screen to start with.
 def save_high_score(score):
     with open("high_score.txt", "w") as file:
         file.write(str(score))
+
 def read_high_score():
     if os.path.exists("high_score.txt"):  # Store the best highe score in the .txt file 
         with open("high_score.txt", "r") as file:
@@ -110,120 +108,111 @@ def start_screen():
     screen.blit(high_score_text, (WIDTH // 2 - 150, HEIGHT // 2 - 180))
 
     # Draw buttons
-    draw_button(screen, "Start", WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50, GRAY, GREEN, lambda: set_screen("Game"))  
+    draw_button(screen, "Start", WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50, GRAY, GREEN, lambda: set_screen("game"))  
     draw_button(screen, "Settings", WIDTH // 2 - 100, HEIGHT // 2 + 20, 200, 50, GRAY, GREEN, lambda: set_screen("settings"))
     draw_button(screen, "About Us", WIDTH // 2 - 100, HEIGHT // 2 + 90, 200, 50, GRAY, GREEN, lambda: set_screen("about"))
     draw_button(screen, "Quit", WIDTH // 2 - 100, HEIGHT // 2 + 160, 200, 50, GRAY, RED, quit_game)
     pygame.display.flip()
 
-
 def settings_screen():
-    screen.blit(background_image, (0, 0))
-    font = pygame.font.Font(None, 50)
-    text = font.render("Settings", True, WHITE)
-    screen.blit(text, (WIDTH // 2 - 100, HEIGHT // 2 - 100))
+    running = True
+    selected_difficulty = "Medium"
+    selected_theme = "Day"
+    selected_bird_skin = "Default"
 
-    # Add a back button
-    draw_button(screen, "Back", 10, 10, 100, 50, GRAY, RED, lambda: set_screen("start"))
-    pygame.display.flip()
+    while running:
+        screen.fill(BLACK)  # Settings background color
 
-# def settings_screen():
-#     running = True
-#     global selected_difficulty, selected_theme, selected_bird_skin
+        # Title
+        font_title = pygame.font.Font(None, 60)
+        title_text = font_title.render("Settings", True, WHITE)
+        title_rect = title_text.get_rect(center=(WIDTH // 2, 50))
+        screen.blit(title_text, title_rect)
 
-#     while running:
-#         screen.fill(BLACK)  # Settings background color
+        # Difficulty Setting
+        font_option = pygame.font.Font(None, 40)
+        difficulty_text = font_option.render(f"Difficulty: {selected_difficulty}", True, WHITE)
+        difficulty_rect = difficulty_text.get_rect(center=(WIDTH // 2, 150))
+        screen.blit(difficulty_text, difficulty_rect)
 
-#         # Title
-#         font_title = pygame.font.Font(None, 60)
-#         title_text = font_title.render("Settings", True, WHITE)
-#         title_rect = title_text.get_rect(center=(WIDTH // 2, 50))
-#         screen.blit(title_text, title_rect)
+        draw_button(screen, "Easy", WIDTH // 2 - 150, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Easy"))
+        draw_button(screen, "Medium", WIDTH // 2 - 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Medium"))
+        draw_button(screen, "Hard", WIDTH // 2 + 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Hard"))
 
-#         # Difficulty Setting
-#         font_option = pygame.font.Font(None, 40)
-#         difficulty_text = font_option.render(f"Difficulty: {selected_difficulty}", True, WHITE)
-#         difficulty_rect = difficulty_text.get_rect(center=(WIDTH // 2, 150))
-#         screen.blit(difficulty_text, difficulty_rect)
+        # Theme Setting
+        theme_text = font_option.render(f"Theme: {selected_theme}", True, WHITE)
+        theme_rect = theme_text.get_rect(center=(WIDTH // 2, 300))
+        screen.blit(theme_text, theme_rect)
 
-#         draw_button(screen, "Easy", WIDTH // 2 - 150, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Easy"))
-#         draw_button(screen, "Medium", WIDTH // 2 - 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Medium"))
-#         draw_button(screen, "Hard", WIDTH // 2 + 50, 200, 100, 50, GRAY, GREEN, lambda: change_difficulty("Hard"))
+        draw_button(screen, "Day", WIDTH // 2 - 150, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Day"))
+        draw_button(screen, "Night", WIDTH // 2 - 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Night"))
+        draw_button(screen, "Winter", WIDTH // 2 + 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Winter"))
 
-#         # Theme Setting
-#         theme_text = font_option.render(f"Theme: {selected_theme}", True, WHITE)
-#         theme_rect = theme_text.get_rect(center=(WIDTH // 2, 300))
-#         screen.blit(theme_text, theme_rect)
+        # Bird Skin Setting
+        bird_skin_text = font_option.render(f"Bird Skin: {selected_bird_skin}", True, WHITE)
+        bird_skin_rect = bird_skin_text.get_rect(center=(WIDTH // 2, 450))
+        screen.blit(bird_skin_text, bird_skin_rect)
 
-#         draw_button(screen, "Day", WIDTH // 2 - 150, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Day"))
-#         draw_button(screen, "Night", WIDTH // 2 - 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Night"))
-#         draw_button(screen, "Winter", WIDTH // 2 + 50, 350, 100, 50, GRAY, GREEN, lambda: change_theme("Winter"))
+        draw_button(screen, "Default", WIDTH // 2 - 150, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Default"))
+        draw_button(screen, "Red", WIDTH // 2 - 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Red"))
+        draw_button(screen, "Blue", WIDTH // 2 + 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Blue"))
 
-#         # Bird Skin Setting
-#         bird_skin_text = font_option.render(f"Bird Skin: {selected_bird_skin}", True, WHITE)
-#         bird_skin_rect = bird_skin_text.get_rect(center=(WIDTH // 2, 450))
-#         screen.blit(bird_skin_text, bird_skin_rect)
+        # Back Button (Repositioned slightly higher)
+        draw_button(screen, "Back", WIDTH // 2 - 50, HEIGHT - 150, 100, 50, GRAY, RED, lambda:())
 
-#         draw_button(screen, "Default", WIDTH // 2 - 150, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Default"))
-#         draw_button(screen, "Red", WIDTH // 2 - 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Red"))
-#         draw_button(screen, "Blue", WIDTH // 2 + 50, 500, 100, 50, GRAY, GREEN, lambda: change_bird_skin("Blue"))
+        pygame.display.flip()
 
-#         # Back Button (Repositioned slightly higher)
-#         draw_button(screen, "Back", WIDTH // 2 - 50, HEIGHT - 150, 100, 50, GRAY, RED, lambda:())
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
-#         pygame.display.flip()
+# Debug Back Button Function
+# def debug_back_button():                              
+#    print("Back button clicked!")  # Debugging output
+#    set_screen("start")  # Ensure this function switches back to the start screen
 
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 exit()
+# Updated draw_button Function
+def draw_button(screen, text, x, y, width, height, color, hover_color, action):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
 
-# # Debug Back Button Function
-# # def debug_back_button():                              
-# #    print("Back button clicked!")  # Debugging output
-# #    set_screen("start")  # Ensure this function switches back to the start screen
+    # Check if mouse is over the button
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        pygame.dra
 
-# # Updated draw_button Function
-# def draw_button(screen, text, x, y, width, height, color, hover_color, action):
-#     mouse = pygame.mouse.get_pos()
-#     click = pygame.mouse.get_pressed()
+# Helper functions for changing settings
+def change_difficulty(level):
+    global selected_difficulty
+    selected_difficulty = level
 
-#     # Check if mouse is over the button
-#     if x + width > mouse[0] > x and y + height > mouse[1] > y:
-#         pygame.dra
+def change_theme(theme):
+    global selected_theme
+    selected_theme = theme
+    apply_theme(theme)
 
-# # Helper functions for changing settings
-# def change_difficulty(level):
-#     global selected_difficulty
-#     selected_difficulty = level
+def change_bird_skin(skin):
+    global selected_bird_skin
+    selected_bird_skin = skin
+    apply_bird_skin(skin)
 
-# def change_theme(theme):
-#     global selected_theme
-#     selected_theme = theme
-#     apply_theme(theme)
+def apply_theme(theme):
+    global background_image
+    if theme == "Day":
+        background_image = pygame.image.load("Img/bg.png")
+    elif theme == "Night":
+        background_image = pygame.image.load("Img/bg.png")
+    elif theme == "Winter":
+        background_image = pygame.image.load("Img/bg.png")
 
-# def change_bird_skin(skin):
-#     global selected_bird_skin
-#     selected_bird_skin = skin
-#     apply_bird_skin(skin)
-
-# def apply_theme(theme):
-#     global background_image
-#     if theme == "Day":
-#         background_image = pygame.image.load("Img/bg.png")
-#     elif theme == "Night":
-#         background_image = pygame.image.load("Img/bg.png")
-#     elif theme == "Winter":
-#         background_image = pygame.image.load("Img/bg.png")
-
-# def apply_bird_skin(skin):
-#     global bird_image
-#     if skin == "Default":
-#         bird_image = pygame.image.load("Img/bird_blue (2).png")
-#     elif skin == "Red":
-#         bird_image = pygame.image.load("Img/birds11.png")
-#     elif skin == "Blue":
-#         bird_image = pygame.image.load("Img/bird_blue (1).png")
+def apply_bird_skin(skin):
+    global bird_image
+    if skin == "Default":
+        bird_image = pygame.image.load("Img/bird_blue (2).png")
+    elif skin == "Red":
+        bird_image = pygame.image.load("Img/birds11.png")
+    elif skin == "Blue":
+        bird_image = pygame.image.load("Img/bird_blue (1).png")
 
 
 # Function to display the about us screen
